@@ -731,8 +731,42 @@
                 max-width: 80px;
             }
         }
+        .obstacle {
+        position: absolute;
+        width: 80%;
+        height: 80%;
+        top: 10%;
+        left: 10%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 1.2rem;
+        z-index: 5;
+        }
+
+        .obstacle-slow {
+            background-color: rgba(255, 204, 0, 0.3);
+            border-radius: 50%;
+        }
+
+        .obstacle-teleport {
+            background-color: rgba(0, 128, 255, 0.3);
+            border-radius: 50%;
+            animation: rotate 2s linear infinite;
+        }
+
+        .obstacle-reverse {
+            background-color: rgba(255, 0, 0, 0.3);
+            border-radius: 50%;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
+
 <body>
     <div class="container">
         <header>
@@ -959,163 +993,408 @@
                     hugMessage.classList.remove('heartbeat');
                 }, 3000);
             });
-            const mazeSize = 10; // 10x10 grid
-            let playerPosition = { x: 0, y: 0 };
-            let heartPosition = { x: mazeSize - 1, y: mazeSize - 1 };
-            let maze = [];
-            let easyMode = false;
-            function initMaze() {
-                const mazeElement = document.getElementById('maze');
-                mazeElement.style.gridTemplateColumns = `repeat(${mazeSize}, 1fr)`;
-                mazeElement.style.gridTemplateRows = `repeat(${mazeSize}, 1fr)`;
-                mazeElement.innerHTML = '';
-                maze = [];
-                for (let y = 0; y < mazeSize; y++) {
-                    const row = [];
-                    for (let x = 0; x < mazeSize; x++) {
-                        const wallChance = easyMode ? 0.15 : 0.3;
-                        const isWall = Math.random() < wallChance && !(x === 0 && y === 0) && !(x === mazeSize - 1 && y === mazeSize - 1);
-                        row.push(isWall);
-                        
-                        const cell = document.createElement('div');
-                        cell.className = `maze-cell ${isWall ? 'maze-wall' : ''}`;
-                        cell.id = `cell-${x}-${y}`;
-                        if (!isWall) {
-                            cell.addEventListener('mouseover', function() {
-                                this.style.backgroundColor = 'rgba(217, 76, 106, 0.1)';
-                            });
-                            
-                            cell.addEventListener('mouseout', function() {
-                                this.style.backgroundColor = '';
-                            });
-                        }
-                        
-                        mazeElement.appendChild(cell);
-                    }
-                    maze.push(row);
+            class MazeGame {
+                constructor(options = {}) {
+                    this.mazeSize = options.size || 10;
+                    this.easyMode = options.easyMode || false;
+                    this.wallChanceEasy = options.wallChanceEasy || 0.15;
+                    this.wallChanceNormal = options.wallChanceNormal || 0.3;
+                    this.addObstacles = options.addObstacles || false;
+                    this.obstacleCount = options.obstacleCount || 3;
+                    this.playerPosition = { x: 0, y: 0 };
+                    this.heartPosition = { x: this.mazeSize - 1, y: this.mazeSize - 1 };
+                    this.maze = [];
+                    this.obstacles = [];
+                    this.mazeElement = document.getElementById('maze');
+                    this.gameWinElement = document.getElementById('gameWin');
+                    this.initMaze = this.initMaze.bind(this);
+                    this.ensurePath = this.ensurePath.bind(this);
+                    this.updateGameDisplay = this.updateGameDisplay.bind(this);
+                    this.movePlayer = this.movePlayer.bind(this);
+                    this.showWinMessage = this.showWinMessage.bind(this);
+                    this.toggleEasyMode = this.toggleEasyMode.bind(this);
+                    this.initMaze();
+                    this.setupEventListeners();
                 }
-                ensurePath();
-                playerPosition = { x: 0, y: 0 };
-                heartPosition = { x: mazeSize - 1, y: mazeSize - 1 };
-                updateGameDisplay();
-                document.getElementById('gameWin').style.display = 'none';
-            }
-            function ensurePath() {
-                if (easyMode) {
-                    for (let x = 0; x < mazeSize; x++) {
-                        maze[0][x] = false; // Top row
+                
+                setupEventListeners() {
+                    document.addEventListener('keydown', (event) => {
+                        switch(event.key) {
+                            case 'ArrowUp':
+                                this.movePlayer(0, -1);
+                                break;
+                            case 'ArrowDown':
+                                this.movePlayer(0, 1);
+                                break;
+                            case 'ArrowLeft':
+                                this.movePlayer(-1, 0);
+                                break;
+                            case 'ArrowRight':
+                                this.movePlayer(1, 0);
+                                break;
+                        }
+                    });
+                    document.getElementById('upBtn').addEventListener('click', () => this.movePlayer(0, -1));
+                    document.getElementById('downBtn').addEventListener('click', () => this.movePlayer(0, 1));
+                    document.getElementById('leftBtn').addEventListener('click', () => this.movePlayer(-1, 0));
+                    document.getElementById('rightBtn').addEventListener('click', () => this.movePlayer(1, 0));
+                    document.getElementById('newGameBtn').addEventListener('click', this.initMaze);
+                    const easyModeBtn = document.getElementById('easyModeBtn');
+                    easyModeBtn.addEventListener('click', this.toggleEasyMode);
+                    easyModeBtn.textContent = this.easyMode ? "Chế độ thường" : "Chế độ dễ";
+                }
+                
+                toggleEasyMode() {
+                    this.easyMode = !this.easyMode;
+                    document.getElementById('easyModeBtn').textContent = this.easyMode ? "Chế độ thường" : "Chế độ dễ";
+                    this.initMaze();
+                }
+                
+                initMaze() {
+                    this.playerPosition = { x: 0, y: 0 };
+                    this.heartPosition = { x: this.mazeSize - 1, y: this.mazeSize - 1 };
+                    this.obstacles = [];
+                    this.mazeElement.style.gridTemplateColumns = `repeat(${this.mazeSize}, 1fr)`;
+                    this.mazeElement.style.gridTemplateRows = `repeat(${this.mazeSize}, 1fr)`;
+                    this.mazeElement.innerHTML = '';
+                    this.generateMaze();
+                    this.ensurePath();
+                    if (this.addObstacles) {
+                        this.addRandomObstacles();
+                    }
+                    this.updateGameDisplay();
+                    this.gameWinElement.style.display = 'none';
+                }
+                
+                generateMaze() {
+                    this.maze = [];
+                    
+                    for (let y = 0; y < this.mazeSize; y++) {
+                        const row = [];
+                        for (let x = 0; x < this.mazeSize; x++) {
+                            const wallChance = this.easyMode ? this.wallChanceEasy : this.wallChanceNormal;
+                            const isWall = Math.random() < wallChance && 
+                                        !(x === 0 && y === 0) && 
+                                        !(x === this.mazeSize - 1 && y === this.mazeSize - 1);
+                            
+                            row.push(isWall);
+                            this.createCellElement(x, y, isWall);
+                        }
+                        this.maze.push(row);
+                    }
+                }
+                
+                createCellElement(x, y, isWall) {
+                    const cell = document.createElement('div');
+                    cell.className = `maze-cell ${isWall ? 'maze-wall' : ''}`;
+                    cell.id = `cell-${x}-${y}`;
+                    if (!isWall) {
+                        cell.addEventListener('mouseover', function() {
+                            this.style.backgroundColor = 'rgba(217, 76, 106, 0.1)';
+                        });
+                        
+                        cell.addEventListener('mouseout', function() {
+                            this.style.backgroundColor = '';
+                        });
                     }
                     
-                    for (let y = 0; y < mazeSize; y++) {
-                        maze[y][mazeSize - 1] = false; // Right column
+                    this.mazeElement.appendChild(cell);
+                }
+                
+                ensurePath() {
+                    if (this.easyMode) {
+                        this.createDirectPath();
+                    } else {
+                        this.createRandomPath();
                     }
-                } else {
-                    const randomPath = Math.random() > 0.5;
+                }
+                
+                createDirectPath() {
+                    for (let x = 0; x < this.mazeSize; x++) {
+                        this.maze[0][x] = false;
+                        const cell = document.getElementById(`cell-${x}-0`);
+                        if (cell) {
+                            cell.className = 'maze-cell';
+                        }
+                    }
                     
-                    if (randomPath) {
-                        for (let x = 0; x < mazeSize; x++) {
-                            maze[0][x] = false; // Top row
+                    for (let y = 0; y < this.mazeSize; y++) {
+                        this.maze[y][this.mazeSize - 1] = false;
+                        const cell = document.getElementById(`cell-${this.mazeSize - 1}-${y}`);
+                        if (cell) {
+                            cell.className = 'maze-cell';
+                        }
+                    }
+                }
+                
+                createRandomPath() {
+                    const pathPattern = Math.random() > 0.5 ? 'top-right' : 'left-bottom';
+                    
+                    if (pathPattern === 'top-right') {
+                        for (let x = 0; x < this.mazeSize; x++) {
+                            this.maze[0][x] = false;
+                            const cell = document.getElementById(`cell-${x}-0`);
+                            if (cell) cell.className = 'maze-cell';
                         }
                         
-                        for (let y = 0; y < mazeSize; y++) {
-                            maze[y][mazeSize - 1] = false; // Right column
+                        for (let y = 0; y < this.mazeSize; y++) {
+                            this.maze[y][this.mazeSize - 1] = false;
+                            const cell = document.getElementById(`cell-${this.mazeSize - 1}-${y}`);
+                            if (cell) cell.className = 'maze-cell';
                         }
                     } else {
-                        for (let y = 0; y < mazeSize; y++) {
-                            maze[y][0] = false; // Left column
+                        for (let y = 0; y < this.mazeSize; y++) {
+                            this.maze[y][0] = false;
+                            const cell = document.getElementById(`cell-0-${y}`);
+                            if (cell) cell.className = 'maze-cell';
                         }
                         
-                        for (let x = 0; x < mazeSize; x++) {
-                            maze[mazeSize - 1][x] = false; // Bottom row
+                        for (let x = 0; x < this.mazeSize; x++) {
+                            this.maze[this.mazeSize - 1][x] = false;
+                            const cell = document.getElementById(`cell-${x}-${this.mazeSize - 1}`);
+                            if (cell) cell.className = 'maze-cell';
+                        }
+                    }
+                    this.addRandomPaths();
+                }
+                
+                addRandomPaths() {
+                    const numRandomPaths = Math.floor(this.mazeSize / 3);
+                    for (let i = 0; i < numRandomPaths; i++) {
+                        const y = Math.floor(Math.random() * (this.mazeSize - 2)) + 1; 
+                        for (let x = 0; x < this.mazeSize; x++) {
+                            if (Math.random() < 0.7) { 
+                                this.maze[y][x] = false;
+                                const cell = document.getElementById(`cell-${x}-${y}`);
+                                if (cell) cell.className = 'maze-cell';
+                            }
+                        }
+                    }
+                    for (let i = 0; i < numRandomPaths; i++) {
+                        const x = Math.floor(Math.random() * (this.mazeSize - 2)) + 1; 
+                        for (let y = 0; y < this.mazeSize; y++) {
+                            if (Math.random() < 0.7) {
+                                this.maze[y][x] = false;
+                                const cell = document.getElementById(`cell-${x}-${y}`);
+                                if (cell) cell.className = 'maze-cell';
+                            }
                         }
                     }
                 }
-            }
-            function updateGameDisplay() {
-                const oldPlayer = document.querySelector('.player');
-                if (oldPlayer) oldPlayer.remove();
                 
-                const oldHeart = document.querySelector('.heart');
-                if (oldHeart) oldHeart.remove();
-                const playerCell = document.getElementById(`cell-${playerPosition.x}-${playerPosition.y}`);
-                const playerElement = document.createElement('div');
-                playerElement.className = 'player';
-                playerCell.appendChild(playerElement);
-                const heartCell = document.getElementById(`cell-${heartPosition.x}-${heartPosition.y}`);
-                const heartElement = document.createElement('div');
-                heartElement.className = 'heart';
-                heartElement.innerHTML = '♥';
-                heartCell.appendChild(heartElement);
-                if (playerPosition.x === heartPosition.x && playerPosition.y === heartPosition.y) {
-                    showWinMessage();
-                }
-            }
-            
-            function showWinMessage() {
-                const gameWin = document.getElementById('gameWin');
-                gameWin.style.display = 'flex';
-                showFallingHearts();
-                playSound('win');
-            }
-            function movePlayer(dx, dy) {
-                const newX = playerPosition.x + dx;
-                const newY = playerPosition.y + dy;
-                if (newX < 0 || newX >= mazeSize || newY < 0 || newY >= mazeSize) {
-                    playSound('wall');
-                    return;
-                }
-                if (maze[newY][newX]) {
-                    playSound('wall');
-                    return;
+                addRandomObstacles() {
+                    for (let i = 0; i < this.obstacleCount; i++) {
+                        const x = Math.floor(Math.random() * (this.mazeSize - 2)) + 1; 
+                        const y = Math.floor(Math.random() * (this.mazeSize - 2)) + 1;
+                        if ((x === this.playerPosition.x && y === this.playerPosition.y) || 
+                            (x === this.heartPosition.x && y === this.heartPosition.y)) {
+                            continue;
+                        }
+                        if (!this.maze[y][x]) {
+                            this.obstacles.push({ x, y, type: this.getRandomObstacleType() });
+                        }
+                    }
                 }
                 
-                playerPosition.x = newX;
-                playerPosition.y = newY;
-                updateGameDisplay();
-                playSound('move');
-            }
-            function playSound(type) {  
-                const sound = new Audio();
-                switch(type) {
-                    case 'move':
-                        sound.src = 'move.mp3';
-                        break;
-                    case 'wall':
-                        sound.src = 'wall.mp3';
-                        break;
-                    case 'win':
-                        sound.src = 'win.mp3';
-                        break;
+                getRandomObstacleType() {
+                    const types = ['slow', 'teleport', 'reverse'];
+                    return types[Math.floor(Math.random() * types.length)];
                 }
-                sound.play().catch(e => console.log('Sound play prevented: ' + e));
-            }
-            document.addEventListener('keydown', function(event) {
-                switch(event.key) {
-                    case 'ArrowUp':
-                        movePlayer(0, -1);
-                        break;
-                    case 'ArrowDown':
-                        movePlayer(0, 1);
-                        break;
-                    case 'ArrowLeft':
-                        movePlayer(-1, 0);
-                        break;
-                    case 'ArrowRight':
-                        movePlayer(1, 0);
-                        break;
+                
+                updateGameDisplay() {
+                    const oldPlayer = document.querySelector('.player');
+                    if (oldPlayer) oldPlayer.remove();
+                    
+                    const oldHeart = document.querySelector('.heart');
+                    if (oldHeart) oldHeart.remove();
+                    const oldObstacles = document.querySelectorAll('.obstacle');
+                    oldObstacles.forEach(obs => obs.remove());
+                    this.addPlayerToDisplay();
+                    this.addHeartToDisplay();
+                    this.obstacles.forEach(obstacle => {
+                        this.addObstacleToDisplay(obstacle);
+                    });
+                    if (this.playerPosition.x === this.heartPosition.x && this.playerPosition.y === this.heartPosition.y) {
+                        this.showWinMessage();
+                    }
                 }
-            });
-            document.getElementById('upBtn').addEventListener('click', () => movePlayer(0, -1));
-            document.getElementById('downBtn').addEventListener('click', () => movePlayer(0, 1));
-            document.getElementById('leftBtn').addEventListener('click', () => movePlayer(-1, 0));
-            document.getElementById('rightBtn').addEventListener('click', () => movePlayer(1, 0));
-            document.getElementById('newGameBtn').addEventListener('click', initMaze);
-            const easyModeBtn = document.getElementById('easyModeBtn');
-            easyModeBtn.addEventListener('click', function() {
-                easyMode = !easyMode;
-                this.textContent = easyMode ? "Chế độ thường" : "Chế độ dễ";
-                initMaze();
-            });
+                
+                addPlayerToDisplay() {
+                    const playerCell = document.getElementById(`cell-${this.playerPosition.x}-${this.playerPosition.y}`);
+                    if (playerCell) {
+                        const playerElement = document.createElement('div');
+                        playerElement.className = 'player';
+                        playerCell.appendChild(playerElement);
+                    }
+                }
+                
+                addHeartToDisplay() {
+                    const heartCell = document.getElementById(`cell-${this.heartPosition.x}-${this.heartPosition.y}`);
+                    if (heartCell) {
+                        const heartElement = document.createElement('div');
+                        heartElement.className = 'heart';
+                        heartElement.innerHTML = '♥';
+                        heartCell.appendChild(heartElement);
+                    }
+                }
+                
+                addObstacleToDisplay(obstacle) {
+                    const obstacleCell = document.getElementById(`cell-${obstacle.x}-${obstacle.y}`);
+                    if (obstacleCell) {
+                        const obstacleElement = document.createElement('div');
+                        obstacleElement.className = `obstacle obstacle-${obstacle.type}`;
+                        switch(obstacle.type) {
+                            case 'slow':
+                                obstacleElement.innerHTML = '⚠️';
+                                break;
+                            case 'teleport':
+                                obstacleElement.innerHTML = '🌀';
+                                break;
+                            case 'reverse':
+                                obstacleElement.innerHTML = '↩️';
+                                break;
+                        }
+                        
+                        obstacleCell.appendChild(obstacleElement);
+                    }
+                }
+                
+                movePlayer(dx, dy) {
+                    const newX = this.playerPosition.x + dx;
+                    const newY = this.playerPosition.y + dy;
+                    if (newX < 0 || newX >= this.mazeSize || newY < 0 || newY >= this.mazeSize) {
+                        this.playSound('wall');
+                        return;
+                    }
+                    if (this.maze[newY][newX]) {
+                        this.playSound('wall');
+                        return;
+                    }
+                    this.playerPosition.x = newX;
+                    this.playerPosition.y = newY;
+                    const obstacleIndex = this.obstacles.findIndex(
+                        obs => obs.x === newX && obs.y === newY
+                    );
+                    
+                    if (obstacleIndex !== -1) {
+                        this.handleObstacleEffect(this.obstacles[obstacleIndex]);
+                    }
+                    this.updateGameDisplay();
+                    this.playSound('move');
+                }
+                
+                handleObstacleEffect(obstacle) {
+                    switch(obstacle.type) {
+                        case 'slow':
+                            setTimeout(() => {
+                                this.updateGameDisplay();
+                            }, 500);
+                            break;
+                            
+                        case 'teleport':
+                            let validLocations = [];
+                            for (let y = 0; y < this.mazeSize; y++) {
+                                for (let x = 0; x < this.mazeSize; x++) {
+                                    if (!this.maze[y][x] && !(x === this.heartPosition.x && y === this.heartPosition.y)) {
+                                        validLocations.push({x, y});
+                                    }
+                                }
+                            }
+                            
+                            if (validLocations.length > 0) {
+                                const randomLocation = validLocations[Math.floor(Math.random() * validLocations.length)];
+                                this.playerPosition = randomLocation;
+                            }
+                            break;
+                            
+                        case 'reverse':
+                            const playerElement = document.querySelector('.player');
+                            if (playerElement) {
+                                playerElement.style.backgroundColor = '#ff0000';
+                                setTimeout(() => {
+                                    playerElement.style.backgroundColor = '';
+                                }, 2000);
+                            }
+                            break;
+                    }
+                }
+                
+                showWinMessage() {
+                    this.gameWinElement.style.display = 'flex';
+                    if (typeof showFallingHearts === 'function') {
+                        showFallingHearts();
+                    }
+                    
+                    this.playSound('win');
+                }
+                
+                playSound(type) {
+                    const sound = new Audio();
+                    switch(type) {
+                        case 'move':
+                            sound.src = 'move.mp3';
+                            break;
+                        case 'wall':
+                            sound.src = 'wall.mp3';
+                            break;
+                        case 'win':
+                            sound.src = 'win.mp3';
+                            break;
+                    }
+                    sound.play().catch(e => console.log('Sound play prevented: ' + e));
+                }
+            }
+            function addObstacleStyles() {
+                const style = document.createElement('style');
+                style.textContent = `
+                .obstacle {
+                    position: absolute;
+                    width: 80%;
+                    height: 80%;
+                    top: 10%;
+                    left: 10%;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    font-size: 1.2rem;
+                    z-index: 5;
+                }
+                
+                .obstacle-slow {
+                    background-color: rgba(255, 204, 0, 0.3);
+                    border-radius: 50%;
+                }
+                
+                .obstacle-teleport {
+                    background-color: rgba(0, 128, 255, 0.3);
+                    border-radius: 50%;
+                    animation: rotate 2s linear infinite;
+                }
+                
+                .obstacle-reverse {
+                    background-color: rgba(255, 0, 0, 0.3);
+                    border-radius: 50%;
+                }
+                
+                @keyframes rotate {
+                    from { transform: rotate(0deg); }
+                    to { transform: rotate(360deg); }
+                }
+                `;
+                document.head.appendChild(style);
+            }
+            function initializeMazeGame() {
+                addObstacleStyles();
+                const mazeGame = new MazeGame({
+                    size: 10,
+                    easyMode: false,
+                    wallChanceEasy: 0.15,
+                    wallChanceNormal: 0.3,
+                    addObstacles: true,
+                    obstacleCount: 3
+                });
+                window.mazeGame = mazeGame;
+            }
             let countdownInterval;
             const setDateBtn = document.getElementById('setDateBtn');
             const dateForm = document.getElementById('dateForm');
@@ -1158,7 +1437,7 @@
             
             function updateCountdown(specialDate) {
                 const now = new Date();
-                const diff = now - specialDate; // Time elapsed since special date
+                const diff = now - specialDate;
                 const days = Math.floor(diff / (1000 * 60 * 60 * 24));
                 const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                 const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
@@ -1214,7 +1493,7 @@
                 isPlaying = !isPlaying;
                 this.textContent = isPlaying ? '⏸️' : '▶️';
             });
-            initMaze();
+            initializeMazeGame();
             loadSpecialDate();
         });
         let countdownInterval;
@@ -1250,7 +1529,7 @@
 
         function updateCountdown(specialDate) {
             const now = new Date();
-            const diff = now - specialDate; // Time elapsed since special date
+            const diff = now - specialDate;
             const days = Math.floor(diff / (1000 * 60 * 60 * 24));
             const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
             const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
