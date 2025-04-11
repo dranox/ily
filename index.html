@@ -13,9 +13,22 @@
         }
         
         body {
-            background-color: #f9f1f3;
+            background: linear-gradient(135deg, #f9f1f3 0%, #ffebef 100%);
             color: #333;
             line-height: 1.6;
+            min-height: 100vh;
+            position: relative;
+        }
+        
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M50 50 L65 35 L50 20 L35 35 Z' fill='%23ffd1dc' fill-opacity='0.1'/%3E%3C/svg%3E");
+            z-index: -1;
         }
         
         .container {
@@ -28,64 +41,154 @@
             text-align: center;
             padding: 2rem 0;
             background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(217, 76, 106, 0.15);
             margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        
+        header:hover {
+            transform: translateY(-5px);
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: -50px;
+            left: -50px;
+            width: 100px;
+            height: 100px;
+            background-color: rgba(217, 76, 106, 0.1);
+            border-radius: 50%;
+        }
+        
+        header::after {
+            content: "";
+            position: absolute;
+            bottom: -50px;
+            right: -50px;
+            width: 120px;
+            height: 120px;
+            background-color: rgba(217, 76, 106, 0.1);
+            border-radius: 50%;
         }
         
         h1 {
             color: #d94c6a;
             margin-bottom: 1rem;
+            font-size: 2.5rem;
+            position: relative;
+            display: inline-block;
+        }
+        
+        h1::after {
+            content: "";
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 70%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #d94c6a, transparent);
+        }
+        
+        h2 {
+            color: #d94c6a;
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
         }
         
         .message-card {
             background-color: #fff;
             padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(217, 76, 106, 0.15);
             margin-bottom: 2rem;
             text-align: center;
+            position: relative;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .message-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(217, 76, 106, 0.2);
         }
         
         .message {
             font-size: 1.2rem;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
         }
         
         .button {
             display: inline-block;
-            padding: 0.8rem 1.5rem;
-            background-color: #d94c6a;
+            padding: 0.8rem 1.8rem;
+            background: linear-gradient(135deg, #d94c6a 0%, #e06c8a 100%);
             color: white;
             text-decoration: none;
-            border-radius: 5px;
+            border-radius: 50px;
             font-weight: bold;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            transition: all 0.3s ease;
             margin: 0.5rem;
+            border: none;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(217, 76, 106, 0.3);
+        }
+        
+        .button::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: all 0.5s ease;
         }
         
         .button:hover {
-            background-color: #c13a58;
+            background: linear-gradient(135deg, #c13a58 0%, #d25e7c 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(217, 76, 106, 0.4);
+        }
+        
+        .button:hover::before {
+            left: 100%;
+        }
+        
+        .button:active {
+            transform: translateY(0);
         }
         
         .game-section {
             background-color: #fff;
             padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(217, 76, 106, 0.15);
             margin-bottom: 2rem;
             text-align: center;
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+        
+        .game-section:hover {
+            transform: translateY(-5px);
         }
         
         .game-container {
             position: relative;
             width: 100%;
-            max-width: 400px;
+            max-width: 450px;
             margin: 2rem auto;
-            border: 2px solid #d94c6a;
-            border-radius: 8px;
+            border: 3px solid #d94c6a;
+            border-radius: 15px;
             overflow: hidden;
+            box-shadow: 0 8px 20px rgba(217, 76, 106, 0.2);
         }
         
         #maze {
@@ -99,21 +202,24 @@
             border: 1px solid #f0d8df;
             background-color: #fff;
             position: relative;
+            transition: background-color 0.3s ease;
         }
         
         .maze-wall {
             background-color: #f0d8df;
+            box-shadow: inset 0 0 10px rgba(217, 76, 106, 0.2);
         }
         
         .player {
             position: absolute;
             width: 80%;
             height: 80%;
-            background-color: #d94c6a;
+            background: radial-gradient(circle, #d94c6a 60%, #c13a58 100%);
             border-radius: 50%;
             top: 10%;
             left: 10%;
             animation: pulse 1.5s infinite ease-in-out;
+            box-shadow: 0 0 15px rgba(217, 76, 106, 0.5);
         }
         
         .heart {
@@ -123,6 +229,14 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
+            animation: beating-heart 1.2s infinite ease-in-out;
+            text-shadow: 0 0 10px rgba(217, 76, 106, 0.5);
+        }
+        
+        @keyframes beating-heart {
+            0% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.2); }
+            100% { transform: translate(-50%, -50%) scale(1); }
         }
         
         .game-win {
@@ -131,7 +245,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(255, 255, 255, 0.9);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 235, 239, 0.95) 100%);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -141,29 +255,51 @@
             color: #d94c6a;
             display: none;
             z-index: 10;
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
         
         .game-controls {
-            margin-top: 1rem;
+            margin-top: 1.5rem;
             display: flex;
             justify-content: center;
             flex-wrap: wrap;
+            max-width: 300px;
+            margin-left: auto;
+            margin-right: auto;
         }
         
         .game-controls button {
             margin: 0.5rem;
             padding: 0.8rem 1.5rem;
-            background-color: #d94c6a;
+            background: linear-gradient(135deg, #d94c6a 0%, #e06c8a 100%);
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 50%;
             font-weight: bold;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            transition: all 0.3s ease;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 10px rgba(217, 76, 106, 0.3);
         }
         
         .game-controls button:hover {
-            background-color: #c13a58;
+            background: linear-gradient(135deg, #c13a58 0%, #d25e7c 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(217, 76, 106, 0.4);
+        }
+        
+        .game-controls button:active {
+            transform: translateY(0px);
         }
         
         @keyframes pulse {
@@ -175,22 +311,54 @@
         .reasons {
             background-color: #fff;
             padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(217, 76, 106, 0.15);
             margin-bottom: 2rem;
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+        
+        .reasons:hover {
+            transform: translateY(-5px);
         }
         
         .reasons h2 {
             color: #d94c6a;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
             text-align: center;
         }
         
         .reason-item {
             margin-bottom: 1rem;
-            padding: 1rem;
-            border-radius: 5px;
+            padding: 1.2rem;
+            border-radius: 10px;
             background-color: #f9f1f3;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(217, 76, 106, 0.1);
+        }
+        
+        .reason-item:hover {
+            transform: translateX(5px);
+            background-color: #ffebef;
+            box-shadow: 0 5px 15px rgba(217, 76, 106, 0.2);
+        }
+        
+        .reason-item::before {
+            content: "♥";
+            position: absolute;
+            left: -15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(217, 76, 106, 0.2);
+            font-size: 1.8rem;
+            transition: all 0.3s ease;
+        }
+        
+        .reason-item:hover::before {
+            left: 5px;
+            color: rgba(217, 76, 106, 0.5);
         }
         
         footer {
@@ -198,12 +366,31 @@
             padding: 2rem 0;
             font-size: 0.9rem;
             color: #777;
+            position: relative;
+        }
+        
+        footer::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #d94c6a, transparent);
         }
         
         #encouragementMessage {
-            font-size: 1.4rem;
+            font-size: 1.5rem;
             font-weight: bold;
             color: #d94c6a;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            margin: 1.5rem 0;
+            padding: 1rem;
+            border-radius: 10px;
+            background-color: rgba(217, 76, 106, 0.05);
+            box-shadow: 0 3px 10px rgba(217, 76, 106, 0.1);
+            display: inline-block;
         }
         
         .hidden {
@@ -213,6 +400,303 @@
         .heart-icon {
             color: #d94c6a;
             font-size: 1.5rem;
+            display: inline-block;
+            animation: floating 3s ease-in-out infinite;
+        }
+        
+        @keyframes floating {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        #hugBtn {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        #hugMessage {
+            transition: all 0.5s ease;
+            transform-origin: center;
+        }
+        
+        #hugMessage.heartbeat {
+            animation: heartbeat 1.5s ease-in-out;
+        }
+        
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            25% { transform: scale(1.1); }
+            50% { transform: scale(1); }
+            75% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .photo-gallery {
+            background-color: #fff;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(217, 76, 106, 0.15);
+            margin-bottom: 2rem;
+            text-align: center;
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+        
+        .photo-gallery:hover {
+            transform: translateY(-5px);
+        }
+        
+        .gallery-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .photo-placeholder {
+            width: 150px;
+            height: 150px;
+            background-color: #f9f1f3;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(217, 76, 106, 0.15);
+            transition: all 0.3s ease;
+        }
+        
+        .photo-placeholder:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(217, 76, 106, 0.3);
+        }
+        
+        .photo-placeholder::before {
+            content: "♥";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2rem;
+            color: rgba(217, 76, 106, 0.5);
+        }
+        
+        .memory-text {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 0.5rem;
+            background-color: rgba(255, 255, 255, 0.8);
+            font-size: 0.8rem;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+        
+        .photo-placeholder:hover .memory-text {
+            transform: translateY(0);
+        }
+        
+        .countdown-section {
+            background-color: #fff;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(217, 76, 106, 0.15);
+            margin-bottom: 2rem;
+            text-align: center;
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+        
+        .countdown-section:hover {
+            transform: translateY(-5px);
+        }
+        
+        .countdown-container {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .countdown-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1rem;
+            background-color: #f9f1f3;
+            border-radius: 10px;
+            min-width: 80px;
+            box-shadow: 0 5px 15px rgba(217, 76, 106, 0.1);
+        }
+        
+        .countdown-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #d94c6a;
+        }
+        
+        .countdown-label {
+            font-size: 0.9rem;
+            color: #777;
+        }
+        
+        .love-letter {
+            background-color: #fff;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(217, 76, 106, 0.15);
+            margin-bottom: 2rem;
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+        
+        .love-letter:hover {
+            transform: translateY(-5px);
+        }
+        
+        .letter-content {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #333;
+            padding: 1.5rem;
+            background-color: #ffebef;
+            border-radius: 10px;
+            position: relative;
+            margin-top: 2rem;
+        }
+        
+        .letter-content::before {
+            content: "";
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            height: 20px;
+            background-color: #fff;
+            border-radius: 50%;
+            box-shadow: 0 -5px 10px rgba(217, 76, 106, 0.1);
+        }
+        
+        .signature {
+            text-align: right;
+            font-style: italic;
+            margin-top: 1rem;
+        }
+        
+        .falling-hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            display: none;
+        }
+        
+        .falling-heart {
+            position: absolute;
+            color: #d94c6a;
+            opacity: 0.6;
+            animation: falling linear infinite;
+        }
+        
+        @keyframes falling {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(calc(100vh + 100px)) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        #showHeartsBtn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #d94c6a;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(217, 76, 106, 0.3);
+            z-index: 1000;
+            transition: all 0.3s ease;
+            animation: pulse 2s infinite;
+        }
+        
+        #showHeartsBtn:hover {
+            transform: scale(1.1);
+        }
+        
+        .music-player {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background-color: white;
+            border-radius: 50px;
+            padding: 0.5rem 1rem;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 5px 15px rgba(217, 76, 106, 0.3);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+        
+        .music-player:hover {
+            transform: translateY(-5px);
+        }
+        
+        .music-player button {
+            background: none;
+            border: none;
+            color: #d94c6a;
+            font-size: 1.5rem;
+            cursor: pointer;
+            margin-right: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .music-player button:hover {
+            transform: scale(1.2);
+        }
+        
+        .music-title {
+            font-size: 0.8rem;
+            color: #777;
+            max-width: 150px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        #newReason {
+            width: 100%;
+            padding: 1rem;
+            margin: 1rem 0;
+            border: 2px solid #f0d8df;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        #newReason:focus {
+            outline: none;
+            border-color: #d94c6a;
+            box-shadow: 0 0 0 3px rgba(217, 76, 106, 0.2);
         }
         
         @media (max-width: 768px) {
@@ -220,8 +704,31 @@
                 padding: 1rem;
             }
             
+            h1 {
+                font-size: 2rem;
+            }
+            
             .game-controls button {
-                padding: 0.6rem 1.2rem;
+                width: 45px;
+                height: 45px;
+                font-size: 1rem;
+            }
+            
+            .countdown-container {
+                flex-wrap: wrap;
+            }
+            
+            .photo-placeholder {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .music-player {
+                padding: 0.3rem 0.8rem;
+            }
+            
+            .music-title {
+                max-width: 80px;
             }
         }
     </style>
@@ -230,40 +737,74 @@
     <div class="container">
         <header>
             <h1>Hiii Bé Yêu <span class="heart-icon">♥</span></h1>
-            <p>Anh làm một cái món quả động viên nho nhỏ dành riêng cho em, bởi vì em là cả thế giới của anh.</p>
+            <p>Anh làm một cái món quả đặc biệt dành riêng cho em, bởi vì em là cả thế giới của anh.</p>
         </header>
         
         <div class="message-card">
             <p class="message">Anh biết rằng mọi thứ có thể đang khó khăn lúc này, nhưng anh muốn em biết em đặc biệt thế nào đối với anh.</p>
-            <p id="encouragementMessage">Em rất rất là giỏi luôn í</p>
+            <div id="encouragementMessage">Em rất rất là giỏi luôn í</div>
             <button class="button" id="newMessageBtn">Xem điều ngọt ngào</button>
+        </div>
+        
+        <div class="countdown-section">
+            <h2>Đếm ngày yêu nhau</h2>
+            <p>Kể từ ngày 19/2/2025</p>
+            
+            <div class="countdown-container">
+                <div class="countdown-box">
+                    <div class="countdown-value" id="days">0</div>
+                    <div class="countdown-label">Ngày</div>
+                </div>
+                <div class="countdown-box">
+                    <div class="countdown-value" id="hours">0</div>
+                    <div class="countdown-label">Giờ</div>
+                </div>
+                <div class="countdown-box">
+                    <div class="countdown-value" id="minutes">0</div>
+                    <div class="countdown-label">Phút</div>
+                </div>
+                <div class="countdown-box">
+                    <div class="countdown-value" id="seconds">0</div>
+                    <div class="countdown-label">Giây</div>
+                </div>
+            </div>
+            
+            <!-- Đã ẩn nút và form đặt ngày -->
+            <button class="button hidden" id="setDateBtn">Đặt ngày đặc biệt</button>
+            <div class="hidden" id="dateForm">
+                <input type="date" id="specialDate" style="padding: 0.8rem; margin: 1rem 0; border: 2px solid #f0d8df; border-radius: 10px;">
+                <button class="button" id="saveDateBtn">Lưu</button>
+            </div>
         </div>
         
         <div class="game-section">
             <h2>Chơi game xíu nhaaaa</h2>
-            <p>Bé dùng điện thoại thì anh có các phím mũi tên hoặc nút bên dưới để di chuyển í.</p>
+            <p>Bé dùng điện thoại thì anh có các phím mũi tên hoặc nút bên dưới để di chuyển í. Tìm trái tim nha!</p>
             
             <div class="game-container">
                 <div id="maze"></div>
                 <div class="game-win" id="gameWin">
                     <p>Yay! Em đã tìm thấy trái tim 🤗</p>
                     <p>Anh yêu em nhiều lắm ♥</p>
-                    <div class="heart-icon" style="font-size: 3rem; margin: 1rem;">♥</div>
+                    <div class="heart-icon" style="font-size: 3rem; margin: 1rem; animation: beating-heart 1s infinite ease-in-out;">♥</div>
                 </div>
             </div>
             
             <div class="game-controls">
-                <button id="upBtn">↑</button><br>
+                <div></div>
+                <button id="upBtn">↑</button>
+                <div></div>
                 <button id="leftBtn">←</button>
-                <button id="rightBtn">→</button><br>
                 <button id="downBtn">↓</button>
+                <button id="rightBtn">→</button>
             </div>
             
             <button class="button" id="newGameBtn">Chơi lại</button>
+            <button class="button" id="easyModeBtn">Chế độ dễ</button>
         </div>
         
         <div class="reasons">
-            <h2>Lý Do Bé luôn tuỵt vời</h2>
+            <h2>Lý Do Bé luôn tuyệt vời</h2>
             <div id="reasonsList">
                 <div class="reason-item">Nụ cười của em làm tỏa sáng cả thế giới của anh mỗi ngày.</div>
                 <div class="reason-item">Em rất làaa mạnh mẽ luônnnnn, mọi lúc mọi nơi.</div>
@@ -273,8 +814,23 @@
             </div>
             <button class="button" id="addReasonBtn">Thêm Lý Do</button>
             <div class="hidden" id="reasonForm">
-                <input type="text" id="newReason" placeholder="Nhập lý do mới..." style="width: 100%; padding: 0.8rem; margin: 1rem 0; border: 1px solid #ddd; border-radius: 5px;">
+                <input type="text" id="newReason" placeholder="Nhập lý do mới...">
                 <button class="button" id="saveReasonBtn">Lưu</button>
+            </div>
+        </div>
+        
+        <div class="love-letter">
+            <h2>Thư tình gửi em</h2>
+            <div class="letter-content">
+                Bé yêu ơi,<br><br>
+                
+                Dạo này bé nỗ lực lắm luôn nên là có khó khăn gì thì anh luôn có mặt để động viên và cổ vũ em í.<br><br>
+                
+                Anh biết cuộc sống không phải lúc nào cũng dễ dàng, nhưng anh sẽ luôn ở bên em đó nhen. Nên là khi có mệt thì nghỉ ngơi một chút rồi bước tiếp nha bé yêu.<br><br>
+                
+                Cảm ơn em vì yêu anh và anh sẽ mãi yêu em. Anh yêu em nhiều lắm.<br><br>
+                
+                <div class="signature">Mãi yêu em,<br>Anh Lộc</div>
             </div>
         </div>
         
@@ -285,6 +841,7 @@
             <div id="hugMessage" class="hidden" style="margin-top: 1rem; font-size: 1.2rem;">
                 <p>Gửi đến em cái ôm ấm áp nhất ngay lúc này 🤗</p>
                 <p>Anh luôn ở đây vì em.</p>
+                <div class="heart-icon" style="font-size: 2rem; margin-top: 1rem;">♥</div>
             </div>
         </div>
         
@@ -293,10 +850,19 @@
             <p class="heart-icon">♥</p>
         </footer>
     </div>
+    
+    <div class="falling-hearts" id="fallingHearts"></div>
+    
+    <div id="showHeartsBtn">♥</div>
+    
+    <div class="music-player">
+        <button id="playPauseBtn">▶️</button>
+        <div class="music-title">Bài hát dành cho em</div>
+        <audio id="audio" src="emxinh.mp3"></audio>
+    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Encouragement messages array
             const encouragementMessages = [
                 "Em là người mạnh mẽ nhất anh từng biết.",
                 "Nụ cười của em làm ngày của anh tươi sáng hơn.",
@@ -312,34 +878,47 @@
                 "Niềm đam mê của em thật lan tỏa.",
                 "Anh ngưỡng mộ sự kiên cường của em.",
                 "Em xứng đáng với tất cả hạnh phúc trên đời.",
-                "Anh luôn ở bên em, bất kể điều gì."
+                "Anh luôn ở bên em, bất kể điều gì xảy ra.",
+                "Khoảnh khắc bên em là khoảnh khắc hạnh phúc nhất.",
+                "Em là lý do anh mỉm cười mỗi ngày.",
+                "Tình yêu của em là món quà quý giá nhất.",
+                "Anh tự hào về em mỗi ngày.",
+                "Em là điều tuyệt vời nhất từng đến với anh."
             ];
-            
-            // Get random message from array
             function getRandomMessage() {
                 const randomIndex = Math.floor(Math.random() * encouragementMessages.length);
                 return encouragementMessages[randomIndex];
             }
-            
-            // New message button
             const newMessageBtn = document.getElementById('newMessageBtn');
             const encouragementMessage = document.getElementById('encouragementMessage');
             
             newMessageBtn.addEventListener('click', function() {
-                encouragementMessage.textContent = getRandomMessage();
                 encouragementMessage.style.opacity = 0;
+                encouragementMessage.style.transform = 'translateY(-10px)';
+                
                 setTimeout(() => {
-                    encouragementMessage.style.transition = 'opacity 1s ease-in';
+                    encouragementMessage.textContent = getRandomMessage();
+                    encouragementMessage.style.transition = 'opacity 1s ease-in, transform 1s ease-in';
                     encouragementMessage.style.opacity = 1;
-                }, 100);
+                    encouragementMessage.style.transform = 'translateY(0)';
+                }, 500);
             });
-            
-            // Add reason functionality
             const addReasonBtn = document.getElementById('addReasonBtn');
             const reasonForm = document.getElementById('reasonForm');
             const newReasonInput = document.getElementById('newReason');
             const saveReasonBtn = document.getElementById('saveReasonBtn');
             const reasonsList = document.getElementById('reasonsList');
+            function loadReasons() {
+                const savedReasons = localStorage.getItem('loveReasons');
+                if (savedReasons) {
+                    reasonsList.innerHTML = savedReasons;
+                }
+            }
+            function saveReasons() {
+                localStorage.setItem('loveReasons', reasonsList.innerHTML);
+            }
+            
+            loadReasons();
             
             addReasonBtn.addEventListener('click', function() {
                 reasonForm.classList.toggle('hidden');
@@ -354,130 +933,162 @@
                     const newReason = document.createElement('div');
                     newReason.className = 'reason-item';
                     newReason.textContent = reasonText;
+                    newReason.style.opacity = 0;
+                    newReason.style.transform = 'translateX(-20px)';
                     reasonsList.appendChild(newReason);
+                    
+                    setTimeout(() => {
+                        newReason.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                        newReason.style.opacity = 1;
+                        newReason.style.transform = 'translateX(0)';
+                    }, 10);
+                    
                     newReasonInput.value = '';
                     reasonForm.classList.add('hidden');
+                    saveReasons();
                 }
             });
-            
-            // Hug button functionality
             const hugBtn = document.getElementById('hugBtn');
             const hugMessage = document.getElementById('hugMessage');
             
             hugBtn.addEventListener('click', function() {
                 hugMessage.classList.remove('hidden');
-                setTimeout(() => {
-                    hugMessage.classList.add('heartbeat');
-                }, 100);
+                hugMessage.classList.add('heartbeat');
                 
                 setTimeout(() => {
                     hugMessage.classList.remove('heartbeat');
                 }, 3000);
             });
-            
-            // Maze Game
             const mazeSize = 10; // 10x10 grid
             let playerPosition = { x: 0, y: 0 };
             let heartPosition = { x: mazeSize - 1, y: mazeSize - 1 };
             let maze = [];
-            
-            // Initialize maze
+            let easyMode = false;
             function initMaze() {
                 const mazeElement = document.getElementById('maze');
                 mazeElement.style.gridTemplateColumns = `repeat(${mazeSize}, 1fr)`;
                 mazeElement.style.gridTemplateRows = `repeat(${mazeSize}, 1fr)`;
                 mazeElement.innerHTML = '';
-                
-                // Generate maze with walls
                 maze = [];
                 for (let y = 0; y < mazeSize; y++) {
                     const row = [];
                     for (let x = 0; x < mazeSize; x++) {
-                        // Random walls (30% chance)
-                        const isWall = Math.random() < 0.3 && !(x === 0 && y === 0) && !(x === mazeSize - 1 && y === mazeSize - 1);
+                        const wallChance = easyMode ? 0.15 : 0.3;
+                        const isWall = Math.random() < wallChance && !(x === 0 && y === 0) && !(x === mazeSize - 1 && y === mazeSize - 1);
                         row.push(isWall);
                         
                         const cell = document.createElement('div');
                         cell.className = `maze-cell ${isWall ? 'maze-wall' : ''}`;
                         cell.id = `cell-${x}-${y}`;
+                        if (!isWall) {
+                            cell.addEventListener('mouseover', function() {
+                                this.style.backgroundColor = 'rgba(217, 76, 106, 0.1)';
+                            });
+                            
+                            cell.addEventListener('mouseout', function() {
+                                this.style.backgroundColor = '';
+                            });
+                        }
+                        
                         mazeElement.appendChild(cell);
                     }
                     maze.push(row);
                 }
-                
-                // Ensure path exists using a simple algorithm
                 ensurePath();
-                
-                // Place player and heart
                 playerPosition = { x: 0, y: 0 };
                 heartPosition = { x: mazeSize - 1, y: mazeSize - 1 };
                 updateGameDisplay();
-                
-                // Hide win message
                 document.getElementById('gameWin').style.display = 'none';
             }
-            
-            // Simple algorithm to ensure there's a path from start to end
             function ensurePath() {
-                // First, clear direct path along the top and right edge
-                for (let x = 0; x < mazeSize; x++) {
-                    maze[0][x] = false; // Top row
-                }
-                
-                for (let y = 0; y < mazeSize; y++) {
-                    maze[y][mazeSize - 1] = false; // Right column
+                if (easyMode) {
+                    for (let x = 0; x < mazeSize; x++) {
+                        maze[0][x] = false; // Top row
+                    }
+                    
+                    for (let y = 0; y < mazeSize; y++) {
+                        maze[y][mazeSize - 1] = false; // Right column
+                    }
+                } else {
+                    const randomPath = Math.random() > 0.5;
+                    
+                    if (randomPath) {
+                        for (let x = 0; x < mazeSize; x++) {
+                            maze[0][x] = false; // Top row
+                        }
+                        
+                        for (let y = 0; y < mazeSize; y++) {
+                            maze[y][mazeSize - 1] = false; // Right column
+                        }
+                    } else {
+                        for (let y = 0; y < mazeSize; y++) {
+                            maze[y][0] = false; // Left column
+                        }
+                        
+                        for (let x = 0; x < mazeSize; x++) {
+                            maze[mazeSize - 1][x] = false; // Bottom row
+                        }
+                    }
                 }
             }
-            
-            // Update game display
             function updateGameDisplay() {
-                // Remove old player and heart
                 const oldPlayer = document.querySelector('.player');
                 if (oldPlayer) oldPlayer.remove();
                 
                 const oldHeart = document.querySelector('.heart');
                 if (oldHeart) oldHeart.remove();
-                
-                // Add player
                 const playerCell = document.getElementById(`cell-${playerPosition.x}-${playerPosition.y}`);
                 const playerElement = document.createElement('div');
                 playerElement.className = 'player';
                 playerCell.appendChild(playerElement);
-                
-                // Add heart
                 const heartCell = document.getElementById(`cell-${heartPosition.x}-${heartPosition.y}`);
                 const heartElement = document.createElement('div');
                 heartElement.className = 'heart';
                 heartElement.innerHTML = '♥';
                 heartCell.appendChild(heartElement);
-                
-                // Check win condition
                 if (playerPosition.x === heartPosition.x && playerPosition.y === heartPosition.y) {
-                    document.getElementById('gameWin').style.display = 'flex';
+                    showWinMessage();
                 }
             }
             
-            // Move player
+            function showWinMessage() {
+                const gameWin = document.getElementById('gameWin');
+                gameWin.style.display = 'flex';
+                showFallingHearts();
+                playSound('win');
+            }
             function movePlayer(dx, dy) {
                 const newX = playerPosition.x + dx;
                 const newY = playerPosition.y + dy;
-                
-                // Check boundaries
                 if (newX < 0 || newX >= mazeSize || newY < 0 || newY >= mazeSize) {
+                    playSound('wall');
                     return;
                 }
-                
-                // Check walls
                 if (maze[newY][newX]) {
+                    playSound('wall');
                     return;
                 }
                 
                 playerPosition.x = newX;
                 playerPosition.y = newY;
                 updateGameDisplay();
+                playSound('move');
             }
-            
-            // Event listeners for keyboard
+            function playSound(type) {  
+                const sound = new Audio();
+                switch(type) {
+                    case 'move':
+                        sound.src = 'move.mp3';
+                        break;
+                    case 'wall':
+                        sound.src = 'wall.mp3';
+                        break;
+                    case 'win':
+                        sound.src = 'win.mp3';
+                        break;
+                }
+                sound.play().catch(e => console.log('Sound play prevented: ' + e));
+            }
             document.addEventListener('keydown', function(event) {
                 switch(event.key) {
                     case 'ArrowUp':
@@ -494,19 +1105,162 @@
                         break;
                 }
             });
-            
-            // Event listeners for buttons
             document.getElementById('upBtn').addEventListener('click', () => movePlayer(0, -1));
             document.getElementById('downBtn').addEventListener('click', () => movePlayer(0, 1));
             document.getElementById('leftBtn').addEventListener('click', () => movePlayer(-1, 0));
             document.getElementById('rightBtn').addEventListener('click', () => movePlayer(1, 0));
-            
-            // New game button
             document.getElementById('newGameBtn').addEventListener('click', initMaze);
+            const easyModeBtn = document.getElementById('easyModeBtn');
+            easyModeBtn.addEventListener('click', function() {
+                easyMode = !easyMode;
+                this.textContent = easyMode ? "Chế độ thường" : "Chế độ dễ";
+                initMaze();
+            });
+            let countdownInterval;
+            const setDateBtn = document.getElementById('setDateBtn');
+            const dateForm = document.getElementById('dateForm');
+            const specialDateInput = document.getElementById('specialDate');
+            const saveDateBtn = document.getElementById('saveDateBtn');
+            function loadSpecialDate() {
+                const savedDate = localStorage.getItem('specialDate');
+                if (savedDate) {
+                    updateCountdown(new Date(savedDate));
+                    startCountdown();
+                }
+            }
             
-            // Initialize the maze when the page loads
+            setDateBtn.addEventListener('click', function() {
+                dateForm.classList.toggle('hidden');
+            });
+            
+            saveDateBtn.addEventListener('click', function() {
+                const dateValue = specialDateInput.value;
+                if (dateValue) {
+                    const specialDate = new Date(dateValue);
+                    localStorage.setItem('specialDate', specialDate.toISOString());
+                    updateCountdown(specialDate);
+                    startCountdown();
+                    dateForm.classList.add('hidden');
+                }
+            });
+            
+            function startCountdown() {
+                if (countdownInterval) {
+                    clearInterval(countdownInterval);
+                }
+                countdownInterval = setInterval(function() {
+                    const savedDate = localStorage.getItem('specialDate');
+                    if (savedDate) {
+                        updateCountdown(new Date(savedDate));
+                    }
+                }, 1000);
+            }
+            
+            function updateCountdown(specialDate) {
+                const now = new Date();
+                const diff = now - specialDate; // Time elapsed since special date
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                document.getElementById('days').textContent = days;
+                document.getElementById('hours').textContent = hours;
+                document.getElementById('minutes').textContent = minutes;
+                document.getElementById('seconds').textContent = seconds;
+            }
+            const fallingHearts = document.getElementById('fallingHearts');
+            const showHeartsBtn = document.getElementById('showHeartsBtn');
+            
+            function createHeart() {
+                const heart = document.createElement('div');
+                heart.className = 'falling-heart';
+                heart.textContent = '♥';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDuration = Math.random() * 3 + 2 + 's';
+                heart.style.fontSize = Math.random() * 20 + 10 + 'px';
+                fallingHearts.appendChild(heart);
+                setTimeout(() => {
+                    heart.remove();
+                }, 5000);
+            }
+            
+            function showFallingHearts() {
+                fallingHearts.style.display = 'block';
+                for (let i = 0; i < 50; i++) {
+                    setTimeout(() => {
+                        createHeart();
+                    }, i * 100);
+                }
+                setTimeout(() => {
+                    fallingHearts.style.display = 'none';
+                }, 8000);
+            }
+            
+            showHeartsBtn.addEventListener('click', showFallingHearts);
+            const playPauseBtn = document.getElementById('playPauseBtn');
+            const audio = document.getElementById('audio');
+
+            playPauseBtn.addEventListener('click', function() {
+                if (audio.paused) {
+                    audio.play();
+                    playPauseBtn.textContent = '⏸️';
+                } else {
+                    audio.pause();
+                    playPauseBtn.textContent = '▶️';
+                }
+            });
+            
+            playPauseBtn.addEventListener('click', function() {
+                isPlaying = !isPlaying;
+                this.textContent = isPlaying ? '⏸️' : '▶️';
+            });
             initMaze();
+            loadSpecialDate();
         });
+        let countdownInterval;
+        const setDateBtn = document.getElementById('setDateBtn');
+        const dateForm = document.getElementById('dateForm');
+        const specialDateInput = document.getElementById('specialDate');
+        const saveDateBtn = document.getElementById('saveDateBtn');
+        function loadSpecialDate() {
+            const savedDate = localStorage.getItem('specialDate');
+            if (savedDate) {
+                updateCountdown(new Date(savedDate));
+            } else {
+                const defaultDate = new Date('2025-02-19T00:00:00');
+                localStorage.setItem('specialDate', defaultDate.toISOString());
+                updateCountdown(defaultDate);
+            }
+            startCountdown();
+        }
+        setDateBtn.style.display = 'none';
+        dateForm.style.display = 'none';
+
+        function startCountdown() {
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+            }
+            countdownInterval = setInterval(function() {
+                const savedDate = localStorage.getItem('specialDate');
+                if (savedDate) {
+                    updateCountdown(new Date(savedDate));
+                }
+            }, 1000);
+        }
+
+        function updateCountdown(specialDate) {
+            const now = new Date();
+            const diff = now - specialDate; // Time elapsed since special date
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+            document.getElementById('days').textContent = days;
+            document.getElementById('hours').textContent = hours;
+            document.getElementById('minutes').textContent = minutes;
+            document.getElementById('seconds').textContent = seconds;
+        }
+        loadSpecialDate();
     </script>
 </body>
 </html>
