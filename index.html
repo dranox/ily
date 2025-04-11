@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dành Riêng Cho Vợ</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f9f1f3;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        header {
+            text-align: center;
+            padding: 2rem 0;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+        
+        h1 {
+            color: #d94c6a;
+            margin-bottom: 1rem;
+        }
+        
+        .message-card {
+            background-color: #fff;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .message {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .button {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            background-color: #d94c6a;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin: 0.5rem;
+        }
+        
+        .button:hover {
+            background-color: #c13a58;
+        }
+        
+        .game-section {
+            background-color: #fff;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .game-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            margin: 2rem auto;
+            border: 2px solid #d94c6a;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        #maze {
+            display: grid;
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            background-color: #fff9fa;
+        }
+        
+        .maze-cell {
+            border: 1px solid #f0d8df;
+            background-color: #fff;
+            position: relative;
+        }
+        
+        .maze-wall {
+            background-color: #f0d8df;
+        }
+        
+        .player {
+            position: absolute;
+            width: 80%;
+            height: 80%;
+            background-color: #d94c6a;
+            border-radius: 50%;
+            top: 10%;
+            left: 10%;
+            animation: pulse 1.5s infinite ease-in-out;
+        }
+        
+        .heart {
+            color: #d94c6a;
+            font-size: 1.5rem;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .game-win {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #d94c6a;
+            display: none;
+            z-index: 10;
+        }
+        
+        .game-controls {
+            margin-top: 1rem;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .game-controls button {
+            margin: 0.5rem;
+            padding: 0.8rem 1.5rem;
+            background-color: #d94c6a;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        .game-controls button:hover {
+            background-color: #c13a58;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(0.9); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(0.9); }
+        }
+        
+        .reasons {
+            background-color: #fff;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .reasons h2 {
+            color: #d94c6a;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        
+        .reason-item {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            border-radius: 5px;
+            background-color: #f9f1f3;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 2rem 0;
+            font-size: 0.9rem;
+            color: #777;
+        }
+        
+        #encouragementMessage {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #d94c6a;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .heart-icon {
+            color: #d94c6a;
+            font-size: 1.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .game-controls button {
+                padding: 0.6rem 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Hiii Bé Yêu <span class="heart-icon">♥</span></h1>
+            <p>Anh làm một cái món quả động viên nho nhỏ dành riêng cho em, bởi vì em là cả thế giới của anh.</p>
+        </header>
+        
+        <div class="message-card">
+            <p class="message">Anh biết rằng mọi thứ có thể đang khó khăn lúc này, nhưng anh muốn em biết em đặc biệt thế nào đối với anh.</p>
+            <p id="encouragementMessage">Em rất rất là giỏi luôn í</p>
+            <button class="button" id="newMessageBtn">Xem điều ngọt ngào</button>
+        </div>
+        
+        <div class="game-section">
+            <h2>Chơi game xíu nhaaaa</h2>
+            <p>Bé dùng điện thoại thì anh có các phím mũi tên hoặc nút bên dưới để di chuyển í.</p>
+            
+            <div class="game-container">
+                <div id="maze"></div>
+                <div class="game-win" id="gameWin">
+                    <p>Yay! Em đã tìm thấy trái tim 🤗</p>
+                    <p>Anh yêu em nhiều lắm ♥</p>
+                    <div class="heart-icon" style="font-size: 3rem; margin: 1rem;">♥</div>
+                </div>
+            </div>
+            
+            <div class="game-controls">
+                <button id="upBtn">↑</button><br>
+                <button id="leftBtn">←</button>
+                <button id="rightBtn">→</button><br>
+                <button id="downBtn">↓</button>
+            </div>
+            
+            <button class="button" id="newGameBtn">Chơi lại</button>
+        </div>
+        
+        <div class="reasons">
+            <h2>Lý Do Bé luôn tuỵt vời</h2>
+            <div id="reasonsList">
+                <div class="reason-item">Nụ cười của em làm tỏa sáng cả thế giới của anh mỗi ngày.</div>
+                <div class="reason-item">Em rất làaa mạnh mẽ luônnnnn, mọi lúc mọi nơi.</div>
+                <div class="reason-item">Sự quan tâm và dịu dàng của em luôn truyền động lực cho anh mỗi ngày.</div>
+                <div class="reason-item">Em xinh, em xinh, em xinh đẹp và thông minh.</div>
+                <div class="reason-item">Ở bên em anh đều cảm thấy mọi khoảnh khắc là đặc biệt.</div>
+            </div>
+            <button class="button" id="addReasonBtn">Thêm Lý Do</button>
+            <div class="hidden" id="reasonForm">
+                <input type="text" id="newReason" placeholder="Nhập lý do mới..." style="width: 100%; padding: 0.8rem; margin: 1rem 0; border: 1px solid #ddd; border-radius: 5px;">
+                <button class="button" id="saveReasonBtn">Lưu</button>
+            </div>
+        </div>
+        
+        <div class="message-card">
+            <h2>Cần một cái ôm?</h2>
+            <p class="message">Nhấn vào nút bên dưới để nhận một cái ôm ảo</p>
+            <button class="button" id="hugBtn">Gửi Cái Ôm</button>
+            <div id="hugMessage" class="hidden" style="margin-top: 1rem; font-size: 1.2rem;">
+                <p>Gửi đến em cái ôm ấm áp nhất ngay lúc này 🤗</p>
+                <p>Anh luôn ở đây vì em.</p>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Làm với tất cả tình yêu dành cho em, mãi mãi và mãi mãi.</p>
+            <p class="heart-icon">♥</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Encouragement messages array
+            const encouragementMessages = [
+                "Em là người mạnh mẽ nhất anh từng biết.",
+                "Nụ cười của em làm ngày của anh tươi sáng hơn.",
+                "Anh luôn tin tưởng vào em.",
+                "Em truyền cảm hứng cho anh mỗi ngày.",
+                "Em có thể làm được những điều tuyệt vời.",
+                "Sự tử tế của em thay đổi cả thế giới.",
+                "Anh thật may mắn khi có em trong cuộc đời.",
+                "Tiếng cười của em là âm thanh yêu thích của anh.",
+                "Em làm mọi thứ trở nên tốt đẹp hơn chỉ bằng sự hiện diện của mình.",
+                "Anh yêu cách suy nghĩ của em.",
+                "Em đẹp cả bên trong lẫn ngoài.",
+                "Niềm đam mê của em thật lan tỏa.",
+                "Anh ngưỡng mộ sự kiên cường của em.",
+                "Em xứng đáng với tất cả hạnh phúc trên đời.",
+                "Anh luôn ở bên em, bất kể điều gì."
+            ];
+            
+            // Get random message from array
+            function getRandomMessage() {
+                const randomIndex = Math.floor(Math.random() * encouragementMessages.length);
+                return encouragementMessages[randomIndex];
+            }
+            
+            // New message button
+            const newMessageBtn = document.getElementById('newMessageBtn');
+            const encouragementMessage = document.getElementById('encouragementMessage');
+            
+            newMessageBtn.addEventListener('click', function() {
+                encouragementMessage.textContent = getRandomMessage();
+                encouragementMessage.style.opacity = 0;
+                setTimeout(() => {
+                    encouragementMessage.style.transition = 'opacity 1s ease-in';
+                    encouragementMessage.style.opacity = 1;
+                }, 100);
+            });
+            
+            // Add reason functionality
+            const addReasonBtn = document.getElementById('addReasonBtn');
+            const reasonForm = document.getElementById('reasonForm');
+            const newReasonInput = document.getElementById('newReason');
+            const saveReasonBtn = document.getElementById('saveReasonBtn');
+            const reasonsList = document.getElementById('reasonsList');
+            
+            addReasonBtn.addEventListener('click', function() {
+                reasonForm.classList.toggle('hidden');
+                if (!reasonForm.classList.contains('hidden')) {
+                    newReasonInput.focus();
+                }
+            });
+            
+            saveReasonBtn.addEventListener('click', function() {
+                const reasonText = newReasonInput.value.trim();
+                if (reasonText) {
+                    const newReason = document.createElement('div');
+                    newReason.className = 'reason-item';
+                    newReason.textContent = reasonText;
+                    reasonsList.appendChild(newReason);
+                    newReasonInput.value = '';
+                    reasonForm.classList.add('hidden');
+                }
+            });
+            
+            // Hug button functionality
+            const hugBtn = document.getElementById('hugBtn');
+            const hugMessage = document.getElementById('hugMessage');
+            
+            hugBtn.addEventListener('click', function() {
+                hugMessage.classList.remove('hidden');
+                setTimeout(() => {
+                    hugMessage.classList.add('heartbeat');
+                }, 100);
+                
+                setTimeout(() => {
+                    hugMessage.classList.remove('heartbeat');
+                }, 3000);
+            });
+            
+            // Maze Game
+            const mazeSize = 10; // 10x10 grid
+            let playerPosition = { x: 0, y: 0 };
+            let heartPosition = { x: mazeSize - 1, y: mazeSize - 1 };
+            let maze = [];
+            
+            // Initialize maze
+            function initMaze() {
+                const mazeElement = document.getElementById('maze');
+                mazeElement.style.gridTemplateColumns = `repeat(${mazeSize}, 1fr)`;
+                mazeElement.style.gridTemplateRows = `repeat(${mazeSize}, 1fr)`;
+                mazeElement.innerHTML = '';
+                
+                // Generate maze with walls
+                maze = [];
+                for (let y = 0; y < mazeSize; y++) {
+                    const row = [];
+                    for (let x = 0; x < mazeSize; x++) {
+                        // Random walls (30% chance)
+                        const isWall = Math.random() < 0.3 && !(x === 0 && y === 0) && !(x === mazeSize - 1 && y === mazeSize - 1);
+                        row.push(isWall);
+                        
+                        const cell = document.createElement('div');
+                        cell.className = `maze-cell ${isWall ? 'maze-wall' : ''}`;
+                        cell.id = `cell-${x}-${y}`;
+                        mazeElement.appendChild(cell);
+                    }
+                    maze.push(row);
+                }
+                
+                // Ensure path exists using a simple algorithm
+                ensurePath();
+                
+                // Place player and heart
+                playerPosition = { x: 0, y: 0 };
+                heartPosition = { x: mazeSize - 1, y: mazeSize - 1 };
+                updateGameDisplay();
+                
+                // Hide win message
+                document.getElementById('gameWin').style.display = 'none';
+            }
+            
+            // Simple algorithm to ensure there's a path from start to end
+            function ensurePath() {
+                // First, clear direct path along the top and right edge
+                for (let x = 0; x < mazeSize; x++) {
+                    maze[0][x] = false; // Top row
+                }
+                
+                for (let y = 0; y < mazeSize; y++) {
+                    maze[y][mazeSize - 1] = false; // Right column
+                }
+            }
+            
+            // Update game display
+            function updateGameDisplay() {
+                // Remove old player and heart
+                const oldPlayer = document.querySelector('.player');
+                if (oldPlayer) oldPlayer.remove();
+                
+                const oldHeart = document.querySelector('.heart');
+                if (oldHeart) oldHeart.remove();
+                
+                // Add player
+                const playerCell = document.getElementById(`cell-${playerPosition.x}-${playerPosition.y}`);
+                const playerElement = document.createElement('div');
+                playerElement.className = 'player';
+                playerCell.appendChild(playerElement);
+                
+                // Add heart
+                const heartCell = document.getElementById(`cell-${heartPosition.x}-${heartPosition.y}`);
+                const heartElement = document.createElement('div');
+                heartElement.className = 'heart';
+                heartElement.innerHTML = '♥';
+                heartCell.appendChild(heartElement);
+                
+                // Check win condition
+                if (playerPosition.x === heartPosition.x && playerPosition.y === heartPosition.y) {
+                    document.getElementById('gameWin').style.display = 'flex';
+                }
+            }
+            
+            // Move player
+            function movePlayer(dx, dy) {
+                const newX = playerPosition.x + dx;
+                const newY = playerPosition.y + dy;
+                
+                // Check boundaries
+                if (newX < 0 || newX >= mazeSize || newY < 0 || newY >= mazeSize) {
+                    return;
+                }
+                
+                // Check walls
+                if (maze[newY][newX]) {
+                    return;
+                }
+                
+                playerPosition.x = newX;
+                playerPosition.y = newY;
+                updateGameDisplay();
+            }
+            
+            // Event listeners for keyboard
+            document.addEventListener('keydown', function(event) {
+                switch(event.key) {
+                    case 'ArrowUp':
+                        movePlayer(0, -1);
+                        break;
+                    case 'ArrowDown':
+                        movePlayer(0, 1);
+                        break;
+                    case 'ArrowLeft':
+                        movePlayer(-1, 0);
+                        break;
+                    case 'ArrowRight':
+                        movePlayer(1, 0);
+                        break;
+                }
+            });
+            
+            // Event listeners for buttons
+            document.getElementById('upBtn').addEventListener('click', () => movePlayer(0, -1));
+            document.getElementById('downBtn').addEventListener('click', () => movePlayer(0, 1));
+            document.getElementById('leftBtn').addEventListener('click', () => movePlayer(-1, 0));
+            document.getElementById('rightBtn').addEventListener('click', () => movePlayer(1, 0));
+            
+            // New game button
+            document.getElementById('newGameBtn').addEventListener('click', initMaze);
+            
+            // Initialize the maze when the page loads
+            initMaze();
+        });
+    </script>
+</body>
+</html>
